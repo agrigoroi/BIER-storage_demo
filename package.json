@@ -1,11 +1,12 @@
 {
-    "name": "bier-storage"
+    "name": "BIER-storage_demo"
   , "version": "0.0.1"
   , "description": "An abstracted storage layer on top of kadoh"
   , "main" : "./index.js"
   , "browserify" : "./index-browserify.js"
   , "dependencies": {
         "browserify": "https://github.com/alexstrat/node-browserify/tarball/for-kadoh",
+        "BIER-storage": "https://github.com/agrigoroi/BIER-storage/tarball/master",
         "tagify": "latest",
         "mustache": "latest",
         "connect": "latest",
