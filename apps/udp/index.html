@@ -56,7 +56,7 @@ function onConnect() {
   new KadOHui.Transport(node._reactor._transport, '#transport>pre');
   new KadOHui.Logger(KadOH.log, '#log .console', '#log .control');
   new KadOHui.ValueM(node._store, '#value-management');
-  $('#info').html('<h3>'+node.getAddress()+' / <small><a href="#" data-placement="bottom" rel="tooltip" title="'+node.getID()+'">'+node.getID().slice(0,10)+'</a></small></h3>');
+  $('#info').html('<h3>'+node.getAddress()+' / <small>'+node.getID()+'</small></h3>');
 }
 
 function connect() {
@@ -159,6 +159,21 @@ $(function() {
         <button id="get_btn" class="btn">Get</button> 
       </div>
       <div id="get_result" class="well" style="display:none">
+        <img class="loader" src="UI/img/ajax-loader.gif">
+        <div class="content"></div>
+      </div>
+    </div>
+    <div class="span6">
+      <h3>Message</h3>
+      <p>Send a message to another node.</p>
+      <div class="well">
+        <div class="control-group">
+          <input class="input-xlarge" id="message_id" name="message_id" type="text" placeholder="Node ID">
+          <textarea id="message_value" name="message_value" placeholder="Message" class="span5" rows="6"></textarea>
+        </div>
+        <button id="message_btn" class="btn">Send</button> 
+      </div>
+      <div id="message_result" class="well" style="display:none">
         <img class="loader" src="UI/img/ajax-loader.gif">
         <div class="content"></div>
       </div>

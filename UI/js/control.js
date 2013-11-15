@@ -4,8 +4,6 @@ KadOHui.Control = function(node) {
   this.node = node;
   this.control = $("#control");
 
-  this.joinBtn    = $("#join_btn").button();
-
   this.putBtn     = $("#put_btn").button();
   this.putNamespace=$("#put_namespace");
   this.putKey     = $("#put_key");
@@ -17,12 +15,14 @@ KadOHui.Control = function(node) {
   this.getNamespace=$("#get_namespace");
   this.getResult  = $("#get_result");
 
-  this.pingBtn     = $("#ping_btn").button();
-  this.pingAddress = $("#ping_address");
-  this.pingResult  = $("#ping_result");
+  this.messageBtn = $('#message_btn').button();
+  this.messageID  = $('#message_id');
+  this.messageValue = $('#message_value');
+  this.messageResult = $('#message_result')
 
   this.initGet()
-      .initPut();
+      .initPut()
+      .initMessage();
 };
 
 KadOHui.Control.prototype = {
@@ -48,7 +48,7 @@ KadOHui.Control.prototype = {
         } else {
           text = value;
         }
-        content.html('<h4>Result</h4><p>'+text+'</p>');
+        content.html('<h4>Result</h4><p>'+JSON.stringify(text)+'</p>');
         loader.hide();
         content.show();
         that.getBtn.click(onGet)
@@ -81,5 +81,34 @@ KadOHui.Control.prototype = {
     this.putBtn.click(onPut);
     return this;
   },
+
+  initMessage: function() {
+    var that = this;
+    var result = this.messageResult;
+    result.show();
+    var loader = result.find('.loader');
+    var content = result.find('.content');
+    result.hide();
+    var onSendMessage = function() {
+      that.messageBtn.unbind('click', onSendMessage)
+                     .button('toggle');
+      var nodeID = that.messageID.val();
+      var message = that.messageValue.val();
+      loader.show();
+      BIERstorage.Node.send(nodeID, message, function() {
+        console.log("here");
+        loader.hide();
+        that.messageBtn.click(onSendMessage)
+                       .button('toggle');
+      });
+    };
+    var onMessage = function(message) {
+      alert(message);
+    }
+    BIERstorage.Node.registerMessageHandler(onMessage);
+    this.messageBtn.click(onSendMessage);
+    return this;
+  },
+
 
 };
