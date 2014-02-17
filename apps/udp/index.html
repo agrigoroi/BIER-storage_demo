@@ -3,10 +3,13 @@
 <head>
   <meta charset="UTF-8">
   <title>KadOH</title>
+
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
   <link rel="stylesheet" type="text/css" href="UI/css/bootstrap.min.css">
   <link rel="stylesheet" type="text/css" href="UI/css/bootstrap-responsive.min.css">
   <link rel="stylesheet" type="text/css" href="UI/css/KadOHUI.css" media="all">
+
   <script type="text/javascript" src="/KadOH.js?debug=true"></script>
   <script type="text/javascript" src="UI/js/vendor/jquery-1.7.js"></script>
   <script type="text/javascript" src="UI/js/vendor/bootstrap-button.js"></script>
@@ -15,15 +18,16 @@
   <script type="text/javascript" src="UI/js/vendor/bootstrap-tab.js"></script>
   <script type="text/javascript" src="UI/js/vendor/bootstrap-alert.js"></script>
   <script type="text/javascript" src="UI/js/kadohui.js"></script>
-    <script type="text/javascript" src="UI/js/control.js"></script>
-    <script type="text/javascript" src="UI/js/node.js"></script>
-    <script type="text/javascript" src="UI/js/reactor.js"></script>
-    <script type="text/javascript" src="UI/js/transport.js"></script>
-    <script type="text/javascript" src="UI/js/routing.js"></script>
-    <script type="text/javascript" src="UI/js/valueM.js"></script>
-    <script type="text/javascript" src="UI/js/log.js"></script>
+  <script type="text/javascript" src="UI&#x2F;js&#x2F;control.js"></script>
+  <script type="text/javascript" src="UI&#x2F;js&#x2F;node.js"></script>
+  <script type="text/javascript" src="UI&#x2F;js&#x2F;reactor.js"></script>
+  <script type="text/javascript" src="UI&#x2F;js&#x2F;transport.js"></script>
+  <script type="text/javascript" src="UI&#x2F;js&#x2F;routing.js"></script>
+  <script type="text/javascript" src="UI&#x2F;js&#x2F;valueM.js"></script>
+  <script type="text/javascript" src="UI&#x2F;js&#x2F;log.js"></script>
+   
   <script type="text/javascript">
-    var config = {
+        var config = {
   bootstraps : ["127.0.0.1:3000", "127.0.0.1:3001", "127.0.0.1:3002"],
   reactor : {
     protocol  : 'jsonrpc2',
@@ -77,6 +81,7 @@ $(function() {
   </script>
 </head>
 <body>
+
   <div class="navbar navbar-fixed-top">
     <div class="navbar-inner">
       <div class="container">
@@ -90,25 +95,28 @@ $(function() {
         data-loading-text="Connecting..." data-complete-text="Connected" data-failed-text="Retry ?">
   Connect
 </button>
+
       </div>
     </div>
   </div>
+
   <div class="container">
     <header class="subhead">
       <div class="subnav subnav-fixed">
         <ul class="nav nav-pills">
-                      <li class="active"><a href="#control" data-toggle="tab">Control</a></li>
-                      <li><a href="#node" data-toggle="tab">Node</a></li>
-                      <li><a href="#reactor" data-toggle="tab">Reactor</a></li>
-                      <li><a href="#transport" data-toggle="tab">Transport</a></li>
-                      <li><a href="#routing-table" data-toggle="tab">Routing Table</a></li>
-                      <li><a href="#value-management" data-toggle="tab">Value Management</a></li>
-                      <li><a href="#log" data-toggle="tab">Log</a></li>
-          </ul>
+            <li class="active"><a href="#control" data-toggle="tab">Control</a></li>
+            <li><a href="#node" data-toggle="tab">Node</a></li>
+            <li><a href="#reactor" data-toggle="tab">Reactor</a></li>
+            <li><a href="#transport" data-toggle="tab">Transport</a></li>
+            <li><a href="#routing-table" data-toggle="tab">Routing Table</a></li>
+            <li><a href="#value-management" data-toggle="tab">Value Management</a></li>
+            <li><a href="#log" data-toggle="tab">Log</a></li>
+        </ul>
       </div>
     </header>
+
     <div class="tab-content">
-                <div class="active tab-pane" id="control">
+          <div class="active tab-pane" id="control">
   <div class="row">
     <div class="span12">
       <h2>Control panel</h2>
@@ -122,6 +130,7 @@ $(function() {
         <li><strong>make sure to join the network</strong> by clicking on the <code>Connect</code> button. This will start an iterative lookup to search for nodes close to you</li>
       </ul>
       <p>After that, feel free to post and retrieve data from the DHT and to take a look at all the different panels to see what is happening behind the scene.</p>
+
     </div>
   </div>
   <div class="row columns">
@@ -173,17 +182,58 @@ $(function() {
         </div>
         <button id="message_btn" class="btn">Send</button> 
       </div>
-      <div id="message_result" class="well" style="display:none">
-        <img class="loader" src="UI/img/ajax-loader.gif">
-        <div class="content"></div>
+      <div id="message_result">
+        <table class="table table-condensed table-bordered table-striped">
+          <thead>
+            <tr>
+              <th>Node</th>
+              <th>Value</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </div>
+    <div class="span6">
+      <h3>Broadcast</h3>
+      <p>Send a message to all other node.</p>
+      <div class="well">
+        <div class="control-group">
+          <textarea id="broadcast_value" name="broadcast_value" placeholder="Message" class="span5" rows="6"></textarea>
+        </div>
+        <button id="broadcast_btn" class="btn">Send</button> 
+      </div>
+    </div>
+    <div class="span6">
+      <h3>Globals</h3>
+      <p>Set and get global settings such as schemas.</p>
+      <div class="well">
+        <div class="control-group">
+          <input class="input-xlarge" id="global_id" name="global_id" type="text" placeholder="Global Key">
+          <textarea id="global_value" name="global_value" placeholder="Global value" class="span5" rows="6"></textarea>
+        </div>
+        <button id="global_btn" class="btn">Set</button> 
+      </div>
+      <div id="globals">
+        <table class="table table-condensed table-bordered table-striped">
+          <thead>
+            <tr>
+              <th>Key</th>
+              <th>Value</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+        <button id="update_global_btn" class="btn">Update</button> 
       </div>
     </div>
   </div>
   <div class="row">
   </div>
 </div>
-                <div class="tab-pane" id="node">
+          <div class="tab-pane" id="node">
   <div id="info" class="well"></div>
+
   <div class="row">
     <div class="span3 columns">
       <h3>Iterative lookups</h3>
@@ -206,7 +256,8 @@ $(function() {
     </div>
   </div>
 </div>
-                <div class="tab-pane" id="reactor">
+
+          <div class="tab-pane" id="reactor">
   <div class="row">
     <div class="span9 columns">
       <h3>Reactor</h3>
@@ -237,16 +288,18 @@ $(function() {
     </div>
   </div>
 </div>
-                <div class="tab-pane" id="transport">
+          <div class="tab-pane" id="transport">
   <pre class="console"></pre>
 </div>
-                <div class="tab-pane" id="routing-table">
+
+          <div class="tab-pane" id="routing-table">
   <div class="well">
   </div>
   <div class="console">
   </div>
 </div>
-                <div class="tab-pane" id="value-management">
+
+          <div class="tab-pane" id="value-management">
   <div class="well">
   <div style="line-height:1em">Value Management not initialized.</div>
   </div>
@@ -267,7 +320,8 @@ $(function() {
     </div>
   </div>
 </div>
-                <div class="tab-pane" id="log">
+
+          <div class="tab-pane" id="log">
     <div class="well row colums control">
       <div class="span1">
         <strong>Log level</strong>
@@ -301,10 +355,13 @@ $(function() {
     <div class="console">
     </div>
 </div>
-      </div>
+
+    </div>
+
     <footer>
       <p><strong>Pierre Guilleminot</strong> and <strong>Alexandre Lacheze</strong></p>
     </footer>
   </div>
+
 </body>
 </html>

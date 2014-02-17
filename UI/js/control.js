@@ -20,9 +20,20 @@ KadOHui.Control = function(node) {
   this.messageValue = $('#message_value');
   this.messageResult = $('#message_result')
 
+  this.broadcastBtn = $('#broadcast_btn');
+  this.broadcastValue = $('#broadcast_value');
+
+  this.globalBtn = $('#global_btn');
+  this.globalKey = $('#global_id');
+  this.globalValue = $('#global_value');
+  this.globalResult = $('#globals');
+  this.updateGlobalBtn = $('#update_global_btn');
+
   this.initGet()
       .initPut()
-      .initMessage();
+      .initMessage()
+      .initBroadcast()
+      .initGlobal();
 };
 
 KadOHui.Control.prototype = {
@@ -84,31 +95,60 @@ KadOHui.Control.prototype = {
 
   initMessage: function() {
     var that = this;
-    var result = this.messageResult;
-    result.show();
-    var loader = result.find('.loader');
-    var content = result.find('.content');
-    result.hide();
     var onSendMessage = function() {
-      that.messageBtn.unbind('click', onSendMessage)
-                     .button('toggle');
       var nodeID = that.messageID.val();
       var message = that.messageValue.val();
-      loader.show();
-      BIERstorage.Node.send(nodeID, message, function() {
-        console.log("here");
-        loader.hide();
-        that.messageBtn.click(onSendMessage)
-                       .button('toggle');
-      });
+      BIERstorage.Node.send(nodeID, message);      
     };
-    var onMessage = function(message) {
-      alert(message);
-    }
+    var tbody = this.messageResult.find('tbody');
+    var onMessage = function(value) {
+      tbody.append(
+        "<tr>" +
+        "<td><code>Source</code></td>" +
+        "<td>"+value.slice(0, 20)+(value.length > 20 ? "..." : "")+"</td>" +
+        "</tr>"
+      );
+    };
     BIERstorage.Node.registerMessageHandler(onMessage);
     this.messageBtn.click(onSendMessage);
     return this;
   },
 
+  initBroadcast: function() {
+    var that = this;
+    var onBroadcastSend = function() {
+      var message = that.broadcastValue.val();
+      BIERstorage.Node.broadcast(message);
+    };
+    this.broadcastBtn.click(onBroadcastSend);
+    return this;
+  },
+
+  initGlobal: function() {
+    var that = this;
+
+    var onSetGlobal = function() {
+      var key = that.globalKey.val();
+      var value  = that.globalValue.val();
+      BIERstorage.Node.setGlobal(key, value);
+    };
+    var tbody = this.globalResult.find('tbody');    
+    var onUpdateGlobal = function() {
+      tbody.html("");
+      var globals = BIERstorage.Node._global;
+      for(key in globals) {
+        var value = globals[key];
+        tbody.append(
+          "<tr>" +
+          "<td><code>"+key+"</code></td>" +
+          "<td>"+value.slice(0, 20)+(value.length > 20 ? "..." : "")+"</td>" +
+          "</tr>"
+        );
+      }
+    }
+    this.globalBtn.click(onSetGlobal);
+    this.updateGlobalBtn.click(onUpdateGlobal);
+    return this;
+  }
 
 };

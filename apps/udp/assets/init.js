@@ -1,4 +1,4 @@
-var config = {
+    var config = {
   bootstraps : ["127.0.0.1:3000", "127.0.0.1:3001", "127.0.0.1:3002"],
   reactor : {
     protocol  : 'jsonrpc2',
@@ -15,8 +15,9 @@ var config = {
   }
 };
 
-function createNode() {
-  node = KadOH.node = new KadOH.Node(undefined, config);
+function onConnect() {
+
+  node = BIERstorage.Node.node;
 
   KadOH.log.subscribeTo(node, 'Node');
   KadOH.log.subscribeTo(node._reactor, 'Reactor');
@@ -29,24 +30,20 @@ function createNode() {
   new KadOHui.Routing(node._routingTable, '#routing-table');
   new KadOHui.Transport(node._reactor._transport, '#transport>pre');
   new KadOHui.Logger(KadOH.log, '#log .console', '#log .control');
-  node.once('connected', function() {
-    new KadOHui.ValueM(node._store, '#value-management');
-    $('#info').html('<h3>'+node.getAddress()+' / <small><a href="#" data-placement="bottom" rel="tooltip" title="'+node.getID()+'">'+node.getID().slice(0,10)+'</a></small></h3>');
-  });
+  new KadOHui.ValueM(node._store, '#value-management');
+  $('#info').html('<h3>'+node.getAddress()+' / <small>'+node.getID()+'</small></h3>');
 }
 
 function connect() {
   var that = $(this);
   that.unbind('click', connect);
-  node.connect(function() {
-    that.button('complete').button('toggle');
-  });
+
+  BIERstorage.Node.connect(null, onConnect);
+  that.button('complete').button('toggle');
 }
 
 $(function() {
   KadOHui.init();
-
-  createNode();
 
   var connectBtn = $('#connection_btn')
   connectBtn.button();
