@@ -3,6 +3,7 @@ var udp = require('dgram');
 var sio = require('socket.io');
 
 var SERVER_EXT_ADDR = "127.0.0.1";
+//TODO: more ports!!!!
 var PORT_AVAIBILITY = {
   5000 : true,
   5001 : true,

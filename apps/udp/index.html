@@ -61,6 +61,7 @@ function onConnect() {
   new KadOHui.Logger(KadOH.log, '#log .console', '#log .control');
   new KadOHui.ValueM(node._store, '#value-management');
   $('#info').html('<h3>'+node.getAddress()+' / <small>'+node.getID()+'</small></h3>');
+  $('#connection_btn').button('complete');//.button('toggle');
 }
 
 function connect() {
@@ -68,7 +69,7 @@ function connect() {
   that.unbind('click', connect);
 
   BIERstorage.Node.connect(null, onConnect);
-  that.button('complete').button('toggle');
+  that.button('toggle');
 }
 
 $(function() {
