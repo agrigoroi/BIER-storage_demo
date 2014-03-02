@@ -1,4 +1,4 @@
-    var config = {
+var config = {
   bootstraps : ["127.0.0.1:3000", "127.0.0.1:3001", "127.0.0.1:3002"],
   reactor : {
     protocol  : 'jsonrpc2',
@@ -15,9 +15,12 @@
   }
 };
 
+var socket = io.connect('http://localhost:3000');
+
 function onConnect() {
 
   node = BIERstorage.Node.node;
+  socket.emit("ping", {id:node.getID(), address:node.getAddress()});
 
   KadOH.log.subscribeTo(node, 'Node');
   KadOH.log.subscribeTo(node._reactor, 'Reactor');
