@@ -1,4 +1,4 @@
-var io = require('socket.io').listen(1000);
+var io = require('socket.io').listen(1345);
 
 nodes = {};
 
@@ -12,7 +12,7 @@ setInterval(function() {
   console.log(nodes);
 }, 5000);
 
-var io2 = require('socket.io').listen(1001);
+var io2 = require('socket.io').listen(1346);
 io2.sockets.on('connection', function(socket) {
   setInterval(function() {
     socket.emit("nodes", nodes);

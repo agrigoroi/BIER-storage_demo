@@ -15,7 +15,7 @@ var config = {
   }
 };
 
-var socket = io.connect('http://project.grigoroi.com:1000');
+var socket = io.connect('http://project.grigoroi.com:1345');
 
 function onConnect() {
 

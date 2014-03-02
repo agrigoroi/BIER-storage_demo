@@ -17,7 +17,7 @@
         $('#my-table').append('<tr><td>'+nodes[nodeId].id+'</td><td>'+nodes[nodeId].address+'</td></tr>');
       }
     }
-    var socket = io.connect('http://project.grigoroi.com:1001');
+    var socket = io.connect('http://project.grigoroi.com:1346');
     socket.on('nodes', function (data) {
       printNodes(data);
     });
