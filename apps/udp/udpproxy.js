@@ -2,15 +2,10 @@ var http = require('http');
 var udp = require('dgram');
 var sio = require('socket.io');
 
-var SERVER_EXT_ADDR = "127.0.0.1";
+var SERVER_EXT_ADDR = "54.72.17.88";
 //TODO: more ports!!!!
-var PORT_AVAIBILITY = {
-  5000 : true,
-  5001 : true,
-  5002 : true,
-  5003 : true,
-  5004 : true
-};
+var PORT_AVAIBILITY = {};
+for( i=5000; i<6000; i++) PORT_AVAIBILITY[i] = true;
 var FIND_PORT = function() {
   for(var i in PORT_AVAIBILITY) {
     if(PORT_AVAIBILITY[i]) return Number(i);
