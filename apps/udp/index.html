@@ -18,6 +18,8 @@
   <script type="text/javascript" src="UI/js/vendor/bootstrap-tab.js"></script>
   <script type="text/javascript" src="UI/js/vendor/bootstrap-alert.js"></script>
   <script type="text/javascript" src="UI/js/kadohui.js"></script>
+  <script src="/socket.io/socket.io.js"></script>
+
   <script type="text/javascript" src="UI&#x2F;js&#x2F;control.js"></script>
   <script type="text/javascript" src="UI&#x2F;js&#x2F;node.js"></script>
   <script type="text/javascript" src="UI&#x2F;js&#x2F;reactor.js"></script>
@@ -27,7 +29,7 @@
   <script type="text/javascript" src="UI&#x2F;js&#x2F;log.js"></script>
    
   <script type="text/javascript">
-        var config = {
+    var config = {
   bootstraps : ["127.0.0.1:3000", "127.0.0.1:3001", "127.0.0.1:3002"],
   reactor : {
     protocol  : 'jsonrpc2',
@@ -44,9 +46,12 @@
   }
 };
 
+var socket = io.connect('http://localhost:3000');
+
 function onConnect() {
 
   node = BIERstorage.Node.node;
+  socket.emit("ping", {id:node.getID(), address:node.getAddress()});
 
   KadOH.log.subscribeTo(node, 'Node');
   KadOH.log.subscribeTo(node._reactor, 'Reactor');
