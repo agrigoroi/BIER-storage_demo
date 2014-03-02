@@ -5,7 +5,11 @@ nodes = {};
 io.sockets.on('connection', function(socket) {
   socket.on("ping", function(data) {
     nodes[data.id] = data;
+    socket.nodeID = data.id;
   });
+  socket.on('disconnect', function() {
+    delete nodes[socket.nodeID];
+  })
 });
 
 setInterval(function() {
