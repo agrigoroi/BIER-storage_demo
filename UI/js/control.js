@@ -101,11 +101,11 @@ KadOHui.Control.prototype = {
       BIERstorage.Node.send(nodeID, message);      
     };
     var tbody = this.messageResult.find('tbody');
-    var onMessage = function(value) {
+    var onMessage = function(value, source) {
       tbody.append(
         "<tr>" +
-        "<td><code>Source</code></td>" +
-        "<td>"+value.slice(0, 20)+(value.length > 20 ? "..." : "")+"</td>" +
+        "<td><code>"+source+"</code></td>" +
+        "<td>"+value.slice(0, 80)+(value.length > 80 ? "..." : "")+"</td>" +
         "</tr>"
       );
     };
