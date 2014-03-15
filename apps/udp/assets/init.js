@@ -35,15 +35,15 @@ function onConnect() {
   new KadOHui.Logger(KadOH.log, '#log .console', '#log .control');
   new KadOHui.ValueM(node._store, '#value-management');
   $('#info').html('<h3>'+node.getAddress()+' / <small>'+node.getID()+'</small></h3>');
-  $('#connection_btn').button('complete');//.button('toggle');
+  $('#connection_btn').button('toggle');
+  $('#connection_btn').button('complete');
 }
 
 function connect() {
   var that = $(this);
   that.unbind('click', connect);
-
+  that.button('loading');
   BIERstorage.Node.connect(null, onConnect);
-  that.button('toggle');
 }
 
 $(function() {

@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>KadOH</title>
+  <title>BIER storage Demo</title>
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
@@ -66,15 +66,15 @@ function onConnect() {
   new KadOHui.Logger(KadOH.log, '#log .console', '#log .control');
   new KadOHui.ValueM(node._store, '#value-management');
   $('#info').html('<h3>'+node.getAddress()+' / <small>'+node.getID()+'</small></h3>');
-  $('#connection_btn').button('complete');//.button('toggle');
+  $('#connection_btn').button('toggle');
+  $('#connection_btn').button('complete');
 }
 
 function connect() {
   var that = $(this);
   that.unbind('click', connect);
-
+  that.button('loading');
   BIERstorage.Node.connect(null, onConnect);
-  that.button('toggle');
 }
 
 $(function() {
@@ -91,11 +91,9 @@ $(function() {
   <div class="navbar navbar-fixed-top">
     <div class="navbar-inner">
       <div class="container">
-        <a href="#" class="brand">KadOH</a>
+        <a href="#" class="brand">BIER Storage</a>
         <ul class="nav">
           <li class="active"><a href="#">Home</a></li>
-          <li><a href="https://github.com/jinroh/kadoh">Source</a></li>
-          <li><a href="http://jinroh.github.com/kadoh">Documentation</a></li>
         </ul>
         <button type="submit" class="pull-right btn btn-mini" id="connection_btn"
         data-loading-text="Connecting..." data-complete-text="Connected" data-failed-text="Retry ?">
@@ -365,7 +363,7 @@ $(function() {
     </div>
 
     <footer>
-      <p><strong>Pierre Guilleminot</strong> and <strong>Alexandre Lacheze</strong></p>
+      <!-- <p><strong>Pierre Guilleminot</strong> and <strong>Alexandre Lacheze</strong></p> -->
     </footer>
   </div>
 
