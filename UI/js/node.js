@@ -40,7 +40,7 @@ KadOHui.Node.prototype = {
     function rejected(html) {
       el.find('.state')
         .removeClass('label-warning')
-        .addClass('label-important')
+        .addClass('label-danger')
         .text('rejected')
         .attr('rel', 'popover')
         .attr('data-original-title', 'Rejected')

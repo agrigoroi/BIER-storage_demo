@@ -4,6 +4,8 @@ KadOHui.Transport =  function(transport, console) {
   this.MAX = 1000;
 
   transport.on('data-in', function(raw) {
+    if(typeof raw !== "string")
+      raw = JSON.stringify(raw, 4);
     this.append(raw, false);
   }, this);
   transport.on('data-out', function(raw) {
@@ -21,7 +23,7 @@ KadOHui.Transport =  function(transport, console) {
         el = $('<div class="raw input"></div>').text(raw);
       }
 
-      if(this.console.children().length > this.MAX)
+      while(this.console.children().length > this.MAX)
         this.console.children().last().remove();
 
       this.console.prepend(el);

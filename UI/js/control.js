@@ -26,7 +26,7 @@ KadOHui.Control = function(node) {
   this.globalBtn = $('#global_btn');
   this.globalKey = $('#global_id');
   this.globalValue = $('#global_value');
-  this.globalResult = $('#globals');
+  this.globalResult = $('#globals_result');
   this.updateGlobalBtn = $('#update_global_btn');
 
   this.initGet()
@@ -62,8 +62,7 @@ KadOHui.Control.prototype = {
         content.html('<h4>Result</h4><p>'+JSON.stringify(text)+'</p>');
         loader.hide();
         content.show();
-        that.getBtn.click(onGet)
-                   .button('toggle');
+        that.getBtn.click(onGet).button('toggle');
       });
     };
     this.getBtn.click(onGet);
@@ -72,7 +71,7 @@ KadOHui.Control.prototype = {
 
   initPut: function() {
     var that = this;
-    var tbody = this.putResult.find('tbody');
+    var tbody = that.putResult.find('tbody');
     var onPut = function() {
       that.putBtn.unbind('click', onPut)
                  .button('toggle');
@@ -85,8 +84,8 @@ KadOHui.Control.prototype = {
           "<td><code>"+key+"</code></td>" +
           "<td>"+value.slice(0, 20)+(value.length > 20 ? "..." : "")+"</td>" +
           "</tr>");
-        that.putBtn.click(onPut)
-                   .button('toggle');
+        that.putBtn.click(onPut).button('toggle');
+        that.putResult.show();
       });
     };
     this.putBtn.click(onPut);
@@ -108,6 +107,7 @@ KadOHui.Control.prototype = {
         "<td>"+value.slice(0, 80)+(value.length > 80 ? "..." : "")+"</td>" +
         "</tr>"
       );
+      that.messageResult.show();
     };
     BIERstorage.Node.registerMessageHandler(onMessage);
     this.messageBtn.click(onSendMessage);
@@ -136,6 +136,7 @@ KadOHui.Control.prototype = {
     var onUpdateGlobal = function() {
       tbody.html("");
       var globals = BIERstorage.Node._global;
+      var show = false;
       for(key in globals) {
         var value = globals[key];
         tbody.append(
@@ -144,10 +145,13 @@ KadOHui.Control.prototype = {
           "<td>"+value.slice(0, 20)+(value.length > 20 ? "..." : "")+"</td>" +
           "</tr>"
         );
+        show = true;
       }
+      if(show===true)
+        that.globalResult.show();
     }
     this.globalBtn.click(onSetGlobal);
-    this.updateGlobalBtn.click(onUpdateGlobal);
+    setInterval(onUpdateGlobal, 1000);
     return this;
   }
 

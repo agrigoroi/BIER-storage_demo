@@ -13,7 +13,6 @@ KadOHui.Reactor = function(reactor, received, sent, state) {
     queried  : this.addToReceived,
     querying : this.addToSent
   }, this);
-  this.reactor.onStateChange(this.changeState, this);
 };
 
 KadOHui.Reactor.prototype = {
@@ -112,7 +111,7 @@ KadOHui.Reactor.prototype = {
 
   _reject: function(el, html) {
     el.find('.state').removeClass('label-warning')
-                      .addClass('label-important')
+                      .addClass('label-danger')
                       .text('rejected');
     if(html)
       el.find('.state').attr('rel', 'popover')
@@ -153,7 +152,7 @@ KadOHui.Reactor.prototype = {
 
   changeState: function(state) {
     var labels = {
-      'disconnected' : 'important',
+      'disconnected' : 'danger',
       'connected'    : 'success'
     };
     this.state.html('<span class="state label label-'+labels[state]+'">'+state+'</span>');

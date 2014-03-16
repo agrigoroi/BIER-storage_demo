@@ -62,41 +62,40 @@ KadOHui.init = function() {
   
   var popover_options = {
       offset: 10,
-      //live: true,
-      trigger : 'manual'
+      trigger : 'manual',
+      html: true
   };
 
-  $("[rel=popover]")
-    .popover(popover_options)
-    .live('click', function(e) {
-      var self = $(this);
-      var popover = self.popover(popover_options, 'get')[0];
-       if(self.is('.popover-hold')) {
-         self.popover('hide');
-         self.removeClass('popover-hold');
-       } else {
-         self.addClass('popover-hold');
-       }
-    })
-    .live('mouseenter',function(e) {
-      var self = $(this);
-      var popover = self.popover(popover_options, 'get')[0];
-      if(!self.is('.popover-hold'))
-        self.popover('show');
-     })
-     .live('mouseleave',function(e) {
-      var self = $(this);
-      var popover = self.popover(popover_options, 'get')[0];
-       if(! self.is('.popover-hold'))
-         self.popover('hide');
-     });
+  $("[rel=popover]").popover(popover_options);
+  $(document).on('click', "[rel=popover]", function(e) {
+    var self = $(this);
+    var popover = self.popover(popover_options, 'get')[0];
+     if(self.is('.popover-hold')) {
+       self.popover('hide');
+       self.removeClass('popover-hold');
+     } else {
+       self.addClass('popover-hold');
+     }
+  });
+  $(document).on('mouseenter', "[rel=popover]", function(e) {
+    var self = $(this);
+    var popover = self.popover(popover_options, 'get')[0];
+    if(!self.is('.popover-hold'))
+      self.popover('show');
+   });
+  $(document).on('mouseleave', "[rel=popover]", function(e) {
+    var self = $(this);
+    var popover = self.popover(popover_options, 'get')[0];
+     if(! self.is('.popover-hold'))
+       self.popover('hide');
+   });
 
-    $('.popover .title').live('click', function(e){
-        e.preventDefault();
-       $('[rel=popover].popover-hold').each(function(){
-            $(this).removeClass('popover-hold').data('popover').popover('hide');
-        });
-    });
+  $(document).on('click', ".popover .title", function(e){
+      e.preventDefault();
+     $('[rel=popover].popover-hold').each(function(){
+          $(this).removeClass('popover-hold').data('popover').popover('hide');
+      });
+  });
 
   $(".tab-content")
     .tooltip({

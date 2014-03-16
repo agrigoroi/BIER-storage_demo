@@ -40,10 +40,10 @@ KadOHui.Logger.prototype = {
     };
 
     var message = args.map(function(obj) {
-      if (typeof obj == 'string') return obj;
+      if (typeof obj === 'string') return obj;
       else {
         var reg = new RegExp("\"", "g");
-        var code = '<code>' + this._stringify(obj).replace(reg, "'") + '</code>';
+        var code = '<code>' + this._stringify(obj, 4).replace(reg, "'") + '</code>';
         return '<b rel="popover" data-content="' + code + '" data-original-title="Object inspector" data-placement="bottom">[Object]</b>';
       }
     }, this).join(', ');
