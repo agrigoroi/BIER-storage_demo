@@ -16,9 +16,9 @@
     body {
       padding-top: 50px;
     }
-    .starter-template {
+    .mycontainer {
       padding: 40px 15px;
-      text-align: center;
+      /*text-align: center;*/
     }
     div:empty {
       display: none;
@@ -27,30 +27,6 @@
 
 </head>
 <body>
-  <script>
-    var socket = io.connect('http://project.grigoroi.com:1345');
-
-    function onConnect() {
-      node = BIERstorage.Node.node;
-      socket.emit("ping", {id:node.getID(), address:node.getAddress()});
-      $('#info').html('<h3>'+node.getAddress()+' / <small>'+node.getID()+'</small></h3>');
-      $('#connection_btn').button('complete');//.button('toggle');
-    }
-
-    function connect() {
-      var that = $(this);
-      that.unbind('click', connect);
-      that.button('loading');
-      BIERstorage.Node.connect(null, onConnect);
-    }
-
-    $(function() {
-      var connectBtn = $('#connection_btn')
-      connectBtn.button();
-      connectBtn.click(connect);
-    });
-  </script>
-
   <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
     <div class="container">
       <div class="navbar-header">
@@ -74,13 +50,87 @@
     </div>
   </div>
 
-  <div class="container">
-
-    <div class="starter-template">
-      <div id="info" class="well"></div>
-      <p class="lead">Use this document as a way to quickly start any new project.<br> All you get is this text and a mostly barebones HTML document.</p>
+  <div class="container mycontainer">
+    <div class="row">
+      <div class="col-md-12">
+        <div id="info" class="well"></div>
+      </div>
     </div>
-
+    <div class="row">
+      <div class="col-md-4">
+        <h3>Bulk Insert</h3>
+        <p>Insert bulk random data inside the database.</p>
+        <div class="well">
+          <div class="control-group">
+            <div class="row">
+              <div class="form-group col-md-12">
+                <div><label>Name</label></div>
+                <input class="form-control" id="name" name="name" type="text" placeholder="Insert Name">
+              </div>
+            </div>
+            <div class="row"> 
+              <div class="col-md-12"><label>Number of Namespaces</label></div>
+              <div class="col-md-6 form-group">
+                <input class="form-control" id="namespace_min" name="namespace_min" type="number" value=2 placeholder="Min">
+              </div>
+              <div class="col-md-6 form-group">
+                <input class="form-control" id="namespace_max" name="namespace_max" type="number" value=2 placeholder="Max">
+              </div>
+            </div>
+            <div class="row"> 
+              <div class="col-md-12"><label>Number of Tuples per Namespace</label></div>
+              <div class="col-md-6 form-group">
+                <input class="form-control" id="tuple_min" name="tuple_min" type="number" value=10 placeholder="Min">
+              </div>
+              <div class="col-md-6 form-group">
+                <input class="form-control" id="tuple_max" name="tuple_max" type="number" value=10 placeholder="Max">
+              </div>
+            </div>
+            <div class="row"> 
+              <div class="col-md-12"><label>Size of Tuples (Characters) </label></div>
+              <div class="col-md-6 form-group">
+                <input class="form-control" id="tuple_size_min" name="tuple_size_min" type="number" value=50 placeholder="Min">
+              </div>
+              <div class="col-md-6 form-group">
+                <input class="form-control" id="tuple_size_max" name="tuple_size_max" type="number" value=99 placeholder="Max">
+              </div>
+            </div>
+            <div class="row"> 
+              <div class="col-md-12"><label>Insert Delay (ms) </label></div>
+              <div class="col-md-6 form-group">
+                <input class="form-control" id="delay_min" name="delay_min" type="number" value=0 placeholder="Min">
+              </div>
+              <div class="col-md-6 form-group">
+                <input class="form-control" id="delay_max" name="delay_max" type="number" value=20 placeholder="Max">
+              </div>
+            </div>
+          <button id="insert_btn" class="btn btn-primary">Insert</button> 
+        </div>
+      </div>
+    </div>
+    <div class="col-md-8">
+      <h3>Retrieve Inserted Data</h3>
+      <p>Retrieve  previously inserted data and check its availability.</p>
+      <div class="well">
+        <div id="get_results">
+          <table class="table table-condensed table-bordered table-striped">
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>Namespaces</th>
+                <th>Total Tuples</th>
+                <th>Average Tuple Size</th>
+                <th>Get Result</th>
+                <th>Get</th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </div>
+      <div class="col-md-6">
+      </div>
+    </div>
   </div><!-- /.container -->
 
 
@@ -88,4 +138,179 @@
   ================================================== -->
   <!-- Placed at the end of the document so the pages load faster -->
   <script src="http://netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>  
+  <script>
+  var socket = io.connect('http://project.grigoroi.com:1345');
+
+  function onConnect() {
+    node = BIERstorage.Node.node;
+    socket.emit("ping", {id:node.getID(), address:node.getAddress()});
+    $('#info').html('<h3>'+node.getAddress()+' / <small>'+node.getID()+'</small></h3>');
+    $('#connection_btn').button('complete');
+    // Bootstrap is stupid. 
+    // we need to wait a bit after setting a button as complete before we can disable it
+    setTimeout(function() {$('#connection_btn').prop('disabled', true);}, 100);
+  }
+
+  function connect() {
+    var that = $(this);
+    that.unbind('click', connect);
+    that.button('loading');
+    BIERstorage.Node.connect(null, onConnect);
+  }
+
+  insertedData = {};
+  NAMESPACE_NAME_SIZE = 10;
+  TUPLE_NAME_SIZE     = 10;
+
+  function insertRow(name, namespacesNum, totalTuples, totalTuplesSize) {
+    $('#insert_'+name).remove();
+    var get_results = $('#get_results');
+    var tbody = get_results.find('tbody');
+    var row = "<tr id=\"insert_" + name + "\">" +
+              "<td>" + name + "</td>" + 
+              "<td>" + namespacesNum + "</td>" + 
+              "<td>" + totalTuples + "</td>" + 
+              "<td>" + totalTuplesSize/totalTuples + "</td>" + 
+              "<td class=\"result\">N/A</td>" + 
+              "<td><button class=\"btn btn-primary\">Get</button></td>";
+    tbody.append(row);
+  }
+
+  function updateRowGetResult(name, value) {
+    $('#insert_'+name+" .result").html(value);
+  }
+
+  function getData(name) {
+    var correctTuples = 0;
+    var totalTuples = 0;
+    var checkData = function(name, namespace, key){ 
+      BIERstorage.Node.get(namespace, key, function(data) {
+        if(data === null) 
+          return;
+        if(data.value == insertedData[name][data.namespace][data.key]) {
+          correctTuples++;
+        }
+        timesToUpdate=2;
+      });
+    }
+
+    function getNamespace(name, namespace, i) {
+      var keys = Object.keys(insertedData[name][namespace]);
+      if(i>=keys.length) {
+        return;
+      }
+      totalTuples++;
+      checkData(name, namespace, keys[i]);
+      setTimeout(getNamespace.bind(this, name, namespace, i+1), 20);
+    }
+
+    for(namespace in insertedData[name]) {
+      if(namespace !== "info") {
+        getNamespace(name, namespace, 0);
+      }
+    }
+
+    timesToUpdate = 2;
+    var updateData = function() {
+      updateRowGetResult(name, correctTuples + "/" + totalTuples);
+      timesToUpdate--;
+      if(timesToUpdate > 0)
+        setTimeout(updateData.bind(this), 1000);
+    }
+    updateData.bind(this)();
+  }
+
+  var insert = function() {
+
+    var random = function(min, max) {
+      return Math.floor(Math.random() * (max - min + 1)) + min;
+    }
+
+    var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+    var randomString = function(length) {
+      var text = "";  
+      for( var i=0; i<length; i++)
+        text += possible.charAt(Math.floor(Math.random() * possible.length));
+      return text;
+    }
+
+    var name             = $('#name').val();
+
+    var minTuplesNum     = parseInt($('#tuple_min').val());
+    var maxTuplesNum     = parseInt($('#tuple_max').val());
+
+    var minTupleSize     = parseInt($('#tuple_size_min').val());
+    var maxTupleSize     = parseInt($('#tuple_size_max').val());
+
+    var minDelayTime     = parseInt($('#delay_min').val());
+    var maxDelayTime     = parseInt($('#delay_max').val());
+
+    var dataToInsert     = {};
+    var totalTuples      = 0;
+    var totalTuplesSize  = 0;
+    
+    var namespacesNum    = random(parseInt($('#namespace_min').val()), parseInt($('#namespace_max').val()));
+
+    var insert = function(namespaceName, tupleName, tuple) {
+      BIERstorage.Node.put(namespaceName, tupleName, tuple);
+    }
+
+    var i=0, j=0;
+    var namespaceName, tuplesNum, thisNamespaceData;
+    var done = false;
+
+    var insertNext = function() {
+      if(j==0) {
+        namespaceName = randomString(NAMESPACE_NAME_SIZE);
+        tuplesNum = random(minTuplesNum, maxTuplesNum);
+        thisNamespaceData = {};
+      }
+      if(j==tuplesNum) {
+        j=0;
+        i++;
+        if(i==namespacesNum) {
+          dataToInsert.info = {totalTuples: totalTuples, totalTuplesSize: totalTuplesSize, namespacesNum: namespacesNum};
+          insertedData[name] = dataToInsert;
+          done = true;
+          return;
+        }
+        dataToInsert[namespaceName] = thisNamespaceData;
+      }
+      var tupleName = randomString(TUPLE_NAME_SIZE);
+      var tupleLength = random(minTupleSize, maxTupleSize);
+      var tuple = randomString(tupleLength);
+      //Insert the data any time in the next 2.5 seconds so we dont overload stuff
+      insert(namespaceName, tupleName, tuple);
+      thisNamespaceData[tupleName] = tuple;
+      totalTuples = totalTuples + 1;
+      totalTuplesSize= totalTuplesSize + tupleLength;
+      j++;
+      setTimeout(insertNext, random(minDelayTime, maxDelayTime));
+    }
+
+    var updateTable = function() {
+      insertRow(name, namespacesNum, totalTuples, totalTuplesSize);  
+      $('#insert_'+name).find("button").button().click(function() {return getData(name);});
+      if(done != true) {
+        setTimeout(updateTable, 1000);
+      }
+    }
+
+    insertNext();
+    setTimeout(updateTable(), 1000);
+  }
+
+  $(function() {
+    var connectBtn = $('#connection_btn');
+    connectBtn.button();
+    connectBtn.click(connect);
+    document.getElementById('connection_btn').click();
+    // connect();
+    $('#connection_btn').prop('disabled', false);
+
+    var insertBtn = $('#insert_btn');
+    insertBtn.button();
+    insertBtn.click(insert);
+  });
+</script>
 </html>
