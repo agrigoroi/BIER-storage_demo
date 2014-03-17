@@ -8,7 +8,8 @@ var app = connect.createServer()
                  .use(KadOH({
                               transport : 'simudp'
                             }))
-                 .use('/UI'    , connect.static(path.join(__dirname, '../..', 'UI')));
+                 .use('/UI'    , connect.static(path.join(__dirname, '../..', 'UI')))
+                 .use('/exp', connect.static(path.join(__dirname, '../..', 'exp')));
 
 var server = exports.server = http.createServer(app);
 
