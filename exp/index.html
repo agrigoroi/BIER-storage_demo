@@ -139,11 +139,22 @@
   <!-- Placed at the end of the document so the pages load faster -->
   <script src="http://netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>  
   <script>
-  var socket = io.connect('http://project.grigoroi.com:1345');
+  var socket = io.connect('http://localhost:1345');
 
   function onConnect() {
     node = BIERstorage.Node.node;
-    socket.emit("ping", {id:node.getID(), address:node.getAddress()});
+    // dataSize = 0;
+    setInterval(function () {
+      BIERstorage.Node.lscan(null, function(data) {
+        var dataSize = 0;
+        for(var namespace in data) {
+          for(var key in data[namespace]) {
+            dataSize++;
+          }
+        }
+      socket.emit("ping", {id:node.getID(), address:node.getAddress(), data: dataSize});
+      });
+    }, 1000);
     $('#info').html('<h3>'+node.getAddress()+' / <small>'+node.getID()+'</small></h3>');
     $('#connection_btn').button('complete');
     // Bootstrap is stupid. 
@@ -190,7 +201,7 @@
         if(data.value == insertedData[name][data.namespace][data.key]) {
           correctTuples++;
         }
-        timesToUpdate=2;
+        timesToUpdate=3;
       });
     }
 
@@ -210,7 +221,7 @@
       }
     }
 
-    timesToUpdate = 2;
+    timesToUpdate = 3;
     var updateData = function() {
       updateRowGetResult(name, correctTuples + "/" + totalTuples);
       timesToUpdate--;

@@ -1,10 +1,19 @@
-var socket = io.connect('http://project.grigoroi.com:1345');
+var socket = io.connect('http://localhost:1345');
 
 function onConnect() {
 
   node = BIERstorage.Node.node;
-  socket.emit("ping", {id:node.getID(), address:node.getAddress()});
-
+  setInterval(function () {
+    BIERstorage.Node.lscan(null, function(data) {
+      var dataSize = 0;
+      for(var namespace in data) {
+        for(var key in data[namespace]) {
+          dataSize++;
+        }
+      }
+    socket.emit("ping", {id:node.getID(), address:node.getAddress(), data: dataSize});
+    });
+  }, 1000);
   KadOH.log.subscribeTo(node, 'Node');
   KadOH.log.subscribeTo(node._reactor, 'Reactor');
   KadOH.log.subscribeTo(node._reactor._transport, 'Transport');
